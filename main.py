@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from flask import Flask, Response
+from flask import Flask, redirect, make_response
 
 app = Flask(__name__)
 
@@ -15,8 +15,13 @@ def redirect_to_token():
         response = requests.get(SOURCE_URL, headers=headers, timeout=10)
         response.raise_for_status()
         match = re.search(r'https?://[^\s"\'<>]+token=[^\s"\'<>]+', response.text)
-        if match:            
-            return Response(match.group(0), mimetype='text/plain')
+        if match:
+            token_url = match.group(0)
+            resp = make_response(redirect(token_url, code=302))
+            resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            resp.headers['Pragma'] = 'no-cache'
+            resp.headers['Expires'] = '0'
+            return resp
         return "Token not found", 404
     except Exception as e:
         return f"Error: {str(e)}", 500
