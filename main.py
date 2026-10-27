@@ -1,14 +1,14 @@
 import os
 import re
 import requests
-from flask import Flask, Response
+from flask import Flask, Response, redirect
 
 app = Flask(__name__)
 
 SOURCE_URL = "https://la.drmlive.net/tp/playlist"
 USER_AGENT = "TiviMate/4.7.0 (Linux; Android 11; Build/RK3328)"
 
-@app.route('/')
+@app.route('/playlist.mpd')
 def get_token_link():
     try:
         headers = {'User-Agent': USER_AGENT}
@@ -21,6 +21,10 @@ def get_token_link():
         return "Error: Token not found", 404
     except Exception as e:
         return f"Error: {str(e)}", 500
+
+@app.route('/')
+def index():
+    return redirect('/playlist.mpd', code=302)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
