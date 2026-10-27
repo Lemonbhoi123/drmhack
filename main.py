@@ -6,7 +6,7 @@ from flask import Flask, redirect
 app = Flask(__name__)
 
 SOURCE_URL = "https://la.drmlive.net/tp/playlist"
-USER_AGENT = "TiviMate/4.7.0 (Linux; Android 11)"
+USER_AGENT = "TiviMate/4.7.0 (Linux; Android 11; Build/RK3328)"
 
 @app.route('/')
 def redirect_to_token():
@@ -16,10 +16,10 @@ def redirect_to_token():
         response.raise_for_status()
         match = re.search(r'https?://[^\s"\'<>]+token=[^\s"\'<>]+', response.text)
         if match:
-            return redirect(match.group(0))
-        return "Token not found", 404
+            return redirect(match.group(0), code=302)
+        return "Error: Token not found", 404
     except Exception as e:
-        return str(e), 500
+        return f"Error: {str(e)}", 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
