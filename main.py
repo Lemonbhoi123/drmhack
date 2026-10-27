@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from flask import Flask, Response, redirect
+from flask import Flask, redirect
 
 app = Flask(__name__)
 
@@ -17,8 +17,8 @@ def get_token_link():
         match = re.search(r'https?://\S*token=\S*', response.text)
         if match:
             url = match.group(0).split('"')[0].split("'")[0].split('<')[0]
-            return Response(url, mimetype='text/plain')
-        return "Error: Token not found", 404
+            return redirect(url, code=302)
+        return "Token not found", 404
     except Exception as e:
         return f"Error: {str(e)}", 500
 
