@@ -1,7 +1,23 @@
 import os
 import re
 import requests
-from flask import Flask, redirect
+from flask import Flask, Response, redirect
+
+app = Flask(__name__)
+
+SOURCE_URL = "https://la.drmlive.net/tp/playlist"
+USER_AGENT = "TiviMate/4.7.0 (Linux; Android 11; Build/RK3328)"
+
+@app.route('/playlist.mpd')
+def get_token_link():
+    try:
+
+Sahi wala Import version (Safe):
+
+import os
+import re
+import requests
+from flask import Flask, Response, redirect
 
 app = Flask(__name__)
 
@@ -17,8 +33,8 @@ def get_token_link():
         match = re.search(r'https?://\S*token=\S*', response.text)
         if match:
             url = match.group(0).split('"')[0].split("'")[0].split('<')[0]
-            return redirect(url, code=302)
-        return "Token not found", 404
+            return Response(url, mimetype='text/plain')
+        return "Error: Token not found", 404
     except Exception as e:
         return f"Error: {str(e)}", 500
 
